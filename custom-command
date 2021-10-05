@@ -1,0 +1,163 @@
+a=1
+while test $a -eq 1
+do
+echo "Welcome to your custom command "
+echo "-----MENU-----"
+echo "1) Manual page"
+echo "2) Version of your command"
+echo "3) Help book "
+echo "4) Get information(cpu/memory)"
+echo "5) Add a new user"
+echo "6) List of users (regular/sudo)"
+echo "7) Exit"
+echo " Enter your choice (1-7) "
+read c
+case $c in
+1)
+     echo "Enter the command to view the manual page:"
+     read cmnd_manual
+     case $cmnd_manual in 
+     "man internsct1")
+     cat /usr/bin/manual-internsct1
+     ;;
+     
+     *) echo "Command Not Found"
+     ;;
+     esac
+;;
+
+2)
+     vrsion="v0.1.0"
+     echo "Enter the command to know the version"
+     read cmnd
+     case $cmnd in
+     "internsct1 --version")
+     echo Version of your command is $vrsion
+     ;;
+     *)
+     echo Command Not Found
+     ;;
+     esac
+;;
+
+3)
+     echo "Enter the command to view the help book"
+     read cmnd_help
+     case $cmnd_help in
+     "internsct1 --help")
+     cat /usr/bin/help-internsct1
+     ;;
+     *)
+     echo Command not found
+     ;;
+     esac
+;;
+ 
+4)
+    echo "---Menu---"
+    echo "1) CPU information of your server"
+    echo "2) Memory information of your server"
+    echo "Enter your Choice (1/2)" 
+    read infochoice
+    case $infochoice in
+    1)
+    echo "Enter the required command"
+    read cmnd1
+        case $cmnd1 in
+        "internsct1 cpu getinfo")
+           lscpu
+        ;;
+        *)
+           echo Command Not Found 
+        ;; 
+        esac
+    ;; 
+    2)
+    echo "Enter the required command"
+    read cmnd2
+        case $cmnd2 in
+        "internsct1 memory getinfo")
+           free
+        ;;
+        *)
+           echo Command Not Found
+        ;;
+        esac
+    ;;
+    *)
+      echo Invalid Choice
+    ;;
+    esac 
+            
+
+
+;;
+
+5)
+   echo "Enter the command required to add a new user"
+   read cmd_user
+          case $cmd_user in
+                     "internsct1 user create"*)
+                      echo "Re-enter the username to be added"
+                      read user_name
+                      sudo -i
+                      useradd -m  $user_name
+                      passwd $user_name
+                      usermod -a -G sudo $user_name
+                      chsh -s /bin/bash $user_name  
+                      echo user created
+                     ;;
+                     *)
+                      echo Command Not Found
+                     ;;
+                     esac
+                    
+;;
+
+6)
+    echo "1) List of regular users"
+    echo "2) List of sudo users"
+    echo "Enter your choice (1or 2)"
+    read ch6
+          case $ch6 in
+          1)
+              echo "Enter the command to list regular users"
+              read cmnd_r
+                         case $cmnd_r in
+                         "internsct1 user list")
+                               cut -d: -f1 /etc/passwd
+                         ;;
+                         *)
+                               echo Command not found 
+                         ;;
+                         esac
+          ;;
+          2)
+              echo "Enter the command to list sudo users"
+              read cmnd_s
+                         case $cmnd_s in
+                         "internsct1 user list --sudo-only")
+                               grep -Po '^sudo.+.*$' /etc/group
+                         ;;
+                         *)
+                               echo Command not found
+                         ;;
+                         esac
+          ;;
+          *)
+              echo "Invalid Choice"
+          ;;
+          esac
+                                
+;;
+
+7) exit
+;;
+
+*)
+    echo "Invalid Choice"
+;;
+esac
+echo "Do you want to continue? Press 1 for yes or  2 for no:"
+read a
+done
